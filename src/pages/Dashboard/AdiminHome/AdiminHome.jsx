@@ -6,14 +6,25 @@ import { FaBook, FaDollarSign, FaJediOrder, FaUser } from "react-icons/fa";
 function AdiminHome() {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const { data: stats } = useQuery({
+  const { data: stats, isLoading: adminStatsLoading } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
       const res = await axiosSecure.get(`admin-stats`);
       return res.data;
     },
   });
-  console.log(stats);
+  const { data: chartData, isLoading: orderStatsLoading } = useQuery({
+    queryKey: ["order-stats"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/order-stats");
+      return res.data;
+    },
+  });
+
+  if (adminStatsLoading || orderStatsLoading) {
+    return <div>loading...</div>;
+  }
+  // console.log(stats);
   return (
     <div>
       <h2 className="text-3xl">
